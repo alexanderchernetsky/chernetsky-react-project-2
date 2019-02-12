@@ -30,7 +30,9 @@ class App extends Component {
       total: data.total_results,
       page: data.page,
       totalPages: data.total_pages,
-    })
+    });
+
+    this.props.history.push(`/search/${query}`);
   };
 
   switchToPage = async (direction) => {

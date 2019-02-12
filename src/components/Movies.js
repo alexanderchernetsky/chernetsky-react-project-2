@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link } from 'react-router-dom';
 
 const Movies = (props) => {
   return (
@@ -12,7 +13,9 @@ const Movies = (props) => {
               <p className="card-text">
                 {movie.overview.length < 100 ? movie.overview : movie.overview.substr(0, 100)+ '...'}
               </p>
-              <button className="btn btn-primary">More</button>
+              <button className="btn btn-primary">
+                <Link to={{pathname: `/movie/${movie.id}`}} className="movie__link">More</Link>
+              </button>
             </div>
           </div>
         ))}

@@ -5,7 +5,7 @@ const Form = (props) => {
       <form onSubmit={props.findMovies}>
         <label htmlFor="filmName">Type the name of the film:</label>
         <input type="text" name="filmName"/>
-        <button type="submit">Find</button>
+        <button type="submit">Search</button>
       </form>
   )
 };
