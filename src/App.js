@@ -9,10 +9,30 @@ const api_key = 'eeb7c73b7cfc09ed59ca3805d5018bd0';
 class App extends Component {
   state = {
     query: undefined,
-    movies: undefined,
-    total: undefined,
-    page: undefined,
-    totalPages: undefined,
+    results: {},
+  };
+
+  componentDidMount = async () => {
+    const pathName = this.props.location.pathname;
+    const query = pathName.replace('/search/','').replace(' ', '%20');
+    console.log(query);
+    const data = JSON.parse(localStorage.getItem(`/search/${query}`));
+    console.log(data);
+    if (data) {
+      this.setState({query: query, results: data});
+    } else {
+      const data = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=1&include_adult=false`)
+          .then(res => res.json());
+
+      console.log(data);
+
+      this.setState({
+        query: query,
+        results: data,
+      });
+
+      localStorage.setItem(`/search/${this.state.query}`,JSON.stringify(this.state.results));
+    }
   };
 
   findMovies = async (e) => {
@@ -26,17 +46,16 @@ class App extends Component {
 
     this.setState({
       query: query,
-      movies: data.results,
-      total: data.total_results,
-      page: data.page,
-      totalPages: data.total_pages,
+      results: data,
     });
 
     this.props.history.push(`/search/${query}`);
+
+    localStorage.setItem(`/search/${this.state.query}`,JSON.stringify(this.state.results));
   };
 
-  switchToPage = async (direction) => {
-    const page = this.state.page + direction;
+  changePage = async (direction) => {
+    const page = this.state.results.page + direction;
     const query = this.state.query;
     const data = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=${page}&include_adult=false`)
         .then(res => res.json());
@@ -44,24 +63,23 @@ class App extends Component {
     console.log(data);
 
     this.setState({
-      movies: data.results,
-      page: data.page,
+      results: data,
     })
   };
 
   render() {
-    const {page, totalPages, total} = this.state;
+    const {total_pages, total_results, results, page} = this.state.results;
     return (
         <div>
           <Form findMovies={this.findMovies}/>
-          {total&&<p>Results found: {total}</p>}
+          {total_results&&<p>Results found: {total_results}</p>}
           {page&&
           <p>
-            {totalPages&&page !==1&&<span onClick={() => this.switchToPage(-1)} className="badge badge-secondary">previous</span>}
-            Page: {page} from {totalPages}
-            {totalPages&&totalPages !==1&&(page !== totalPages)&&<span onClick={() => this.switchToPage(1)} className="badge badge-secondary">next</span>}
+            {total_pages&&page !==1&&<span onClick={() => this.changePage(-1)} className="badge badge-secondary">previous</span>}
+            Page: {page} from {total_pages}
+            {total_pages&&total_pages !==1&&(page !== total_pages)&&<span onClick={() => this.changePage(1)} className="badge badge-secondary">next</span>}
           </p>}
-          {this.state.movies&&<Movies movies={this.state.movies}/>}
+          {results&&<Movies movies={results}/>}
         </div>
     );
   }
