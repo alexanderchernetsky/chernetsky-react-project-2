@@ -17,3 +17,26 @@
     align-items: stretch;
     flex-wrap: wrap;
 }
+
+.app-header {
+    background-color: #444444;
+    min-height: 10vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.carousel-item {
+    width: 500px !important;
+    height:90vh;
+}
+
+.carousel-inner {
+    width: 500px !important;
+}
+
+.carousel {
+    background-color: #E6E6E6;
+}

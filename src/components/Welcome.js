@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import Form from "./Form";
+import Slider from './Slider';
 
 class Welcome extends Component {
 
@@ -11,11 +13,10 @@ class Welcome extends Component {
 
   render() {
     return (
-        <form onSubmit={this.goToSearchPage}>
-          <label htmlFor="filmName">Type the name of the film:</label>
-          <input type="text" name="filmName"/>
-          <button type="submit">Search</button>
-        </form>
+        <React.Fragment>
+          <Form findMovies={this.goToSearchPage}/>
+          <Slider/>
+        </React.Fragment>
     )
   }
 }

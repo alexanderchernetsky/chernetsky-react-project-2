@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import Router from './components/Router';
 import * as serviceWorker from './serviceWorker';
 import '../node_modules/bootstrap/dist/css/bootstrap.css';
+import 'jquery';
+import 'popper.js';
+import 'bootstrap';
+
 
 ReactDOM.render(<Router />, document.getElementById('root'));
 
