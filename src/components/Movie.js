@@ -1,5 +1,4 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
 
 const api_key = 'eeb7c73b7cfc09ed59ca3805d5018bd0';
 
@@ -44,9 +43,7 @@ class Movie extends React.Component{
                     <li className="list-group-item mb-0 mx-auto" key={company.id}>{company.name}</li>
                 ))}
               </ul>
-              <button onClick={this.goBack} className="btn btn-primary btn-lg mt-3">
-                <Link to='/' className="movie__link">Return Back</Link>
-              </button>
+              <button onClick={this.props.history.goBack} className="btn btn-primary btn-lg mt-3">Return Back</button>
             </div>}
         </div>
     )

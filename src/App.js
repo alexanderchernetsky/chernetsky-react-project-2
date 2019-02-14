@@ -1,7 +1,7 @@
-import {Component} from 'react';
+import React, {Component} from 'react';
 import Form from './components/Form';
 import Movies from './components/Movies';
-import React from 'react';
+import SortForm from './components/SortForm';
 import './style.css';
 
 const api_key = 'eeb7c73b7cfc09ed59ca3805d5018bd0';
@@ -9,30 +9,73 @@ const api_key = 'eeb7c73b7cfc09ed59ca3805d5018bd0';
 class App extends Component {
   state = {
     query: undefined,
+    page: undefined,
     results: {},
+    sorted: 'no',
   };
 
   componentDidMount = async () => {
-    const pathName = this.props.location.pathname;
-    const query = pathName.replace('/search/','').replace(' ', '%20');
+    console.log('did mount works!');
+    const {page, query} = this.props.match.params;
+    console.log(page);
     console.log(query);
-    const data = JSON.parse(localStorage.getItem(`/search/${query}`));
+
+    const data = JSON.parse(localStorage.getItem(`/search/${query}/${page}`));
     console.log(data);
     if (data) {
-      this.setState({query: query, results: data});
+      this.setState({
+        query: query,
+        results: data,
+        page: page,
+      });
     } else {
-      const data = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=1&include_adult=false`)
+      const data = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=${page}&include_adult=false`)
           .then(res => res.json());
 
       console.log(data);
 
       this.setState({
         query: query,
+        page: page,
         results: data,
       });
 
-      localStorage.setItem(`/search/${this.state.query}`,JSON.stringify(this.state.results));
+      localStorage.setItem(`/search/${query}/${page}`,JSON.stringify(this.state.results));
     }
+  };
+
+  componentDidUpdate = async (prevProps, prevState, prevContext) => {
+    console.log('did update works!');
+    if (prevProps.match.params.page !== this.props.match.params.page) {
+      console.log('page changed!');
+      const {page, query} = this.props.match.params;
+      console.log(page);
+      console.log(query);
+
+      const data = JSON.parse(localStorage.getItem(`/search/${query}/${page}`));
+      console.log(data);
+      if (data) {
+        this.setState({
+          query: query,
+          results: data,
+          page: page,
+        });
+      } else {
+        const data = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=${page}&include_adult=false`)
+            .then(res => res.json());
+
+        console.log(data);
+
+        this.setState({
+          query: query,
+          page: page,
+          results: data,
+        });
+
+        localStorage.setItem(`/search/${query}/${page}`, JSON.stringify(this.state.results));
+      }
+    }
+
   };
 
   findMovies = async (e) => {
@@ -44,27 +87,33 @@ class App extends Component {
 
     console.log(data);
 
+    const page = data.page;
+
     this.setState({
       query: query,
+      page,
       results: data,
     });
 
-    this.props.history.push(`/search/${query}`);
+    this.props.history.push(`/search/${query}/${page}`);
 
-    localStorage.setItem(`/search/${this.state.query}`,JSON.stringify(this.state.results));
+    localStorage.setItem(`/search/${query}/${page}`,JSON.stringify(this.state.results));
   };
 
   changePage = async (direction) => {
     const page = this.state.results.page + direction;
     const query = this.state.query;
-    const data = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=${page}&include_adult=false`)
-        .then(res => res.json());
-
-    console.log(data);
 
     this.setState({
-      results: data,
-    })
+      page,
+    });
+
+    this.props.history.push(`/search/${query}/${page}`);
+  };
+
+  setSorting = (e) => {
+    console.log(e.currentTarget.value);
+    this.setState({sorted: e.currentTarget.value});
   };
 
   render() {
@@ -79,6 +128,7 @@ class App extends Component {
             Page: {page} from {total_pages}
             {total_pages&&total_pages !==1&&(page !== total_pages)&&<span onClick={() => this.changePage(1)} className="badge badge-secondary">next</span>}
           </p>}
+          <SortForm setSorting={this.setSorting}/>
           {results&&<Movies movies={results}/>}
         </div>
     );

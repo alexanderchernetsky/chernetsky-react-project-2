@@ -7,8 +7,7 @@ class Welcome extends Component {
   goToSearchPage = (e) => {
     e.preventDefault();
     const searchFieldValue = e.target.filmName.value;
-    const query = searchFieldValue.replace(' ', '%20');
-    this.props.history.push(`/search/${query}`);
+    this.props.history.push(`/search/${searchFieldValue}/1`);
   };
 
   render() {
