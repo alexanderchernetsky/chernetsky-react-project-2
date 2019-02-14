@@ -7,7 +7,7 @@ const SortForm = (props) => {
         {' '}
         <span>vote average</span><input type="radio" name="sort" value="vote_average" onClick={props.setSorting}/>
         {' '}
-        <span>no</span><input type="radio" name="sort" value="no" onClick={props.setSorting}/>
+        <span>no</span><input type="radio" name="sort" value="no" defaultChecked onClick={props.setSorting}/>
       </form>
   )
 };

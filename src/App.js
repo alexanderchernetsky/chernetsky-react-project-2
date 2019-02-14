@@ -74,9 +74,12 @@ class App extends Component {
 
         localStorage.setItem(`/search/${query}/${page}`, JSON.stringify(this.state.results));
       }
+      setTimeout(this.sortResults, 100); // to prevent bugs caused by asynchronous nature of setState
     }
 
-
+    if(prevState.sorted !== this.state.sorted) {
+      this.sortResults();
+    }
 
   };
 
@@ -116,6 +119,33 @@ class App extends Component {
   setSorting = (e) => {
     console.log(e.currentTarget.value);
     this.setState({sorted: e.currentTarget.value});
+  };
+
+  sortResults = () => {
+    console.log('sorting works!');
+    const data = {...this.state.results};
+    console.log(data);
+    let sorted;
+    if (this.state.sorted === 'vote_average') {
+      sorted = data.results.sort((first, second) => {
+        return second.vote_average - first.vote_average;
+      });
+      data.results = sorted;
+    }
+    if(this.state.sorted === 'no') {
+      sorted = data.results.sort((first, second) => {
+        return second.id - first.id;
+      });
+      data.results = sorted;
+    }
+    if(this.state.sorted === 'date') {
+      sorted = data.results.sort((first, second) => {
+        return second.release_date.split('-').join('') - first.release_date.split('-').join('');
+      });
+      data.results = sorted;
+    }
+    console.log(sorted);
+    this.setState({results: data});
   };
 
   render() {

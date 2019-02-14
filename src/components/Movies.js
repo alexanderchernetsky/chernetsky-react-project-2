@@ -9,7 +9,11 @@ const Movies = (props) => {
             <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt="poster" className="card-img-top movie-card"/>
               <div className="card-body">
                 <h5 className="card-title">{movie.original_title}</h5>
-                <p className="card-title">{movie.release_date}</p>
+                <p className="card-title">
+                  {movie.release_date}
+                  <span> Vote average: {movie.vote_average}</span>
+                  <span> Vote count: {movie.vote_count}</span>
+                </p>
                 <p className="card-text">
                   {movie.overview.length < 100 ? movie.overview : movie.overview.substr(0, 100)+ '...'}
                 </p>
