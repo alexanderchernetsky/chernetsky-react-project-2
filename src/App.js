@@ -76,6 +76,8 @@ class App extends Component {
       }
     }
 
+
+
   };
 
   findMovies = async (e) => {

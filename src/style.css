@@ -44,3 +44,13 @@
 .badge:hover {
     cursor: pointer;
 }
+
+.movie__container {
+    flex: none !important;
+    width: 18rem;
+}
+
+.card-deck {
+    flex-wrap: wrap;
+    flex-direction: row;
+}
