@@ -21,10 +21,25 @@ class App extends Component {
     sorted: 'no',
   };
 
-  componentDidMount = async () => {
+  componentDidMount() {
+    this.getResults();
+  };
+
+  componentDidUpdate = async (prevProps, prevState) => {
+    if (prevProps.match.params.page !== this.props.match.params.page) {
+      this.getResults();
+      setTimeout(this.sortResults, 50); // to prevent bugs caused by asynchronous nature of setState
+    }
+    if(prevState.sorted !== this.state.sorted) {
+      this.sortResults();
+    }
+  };
+
+  getResults = async () => {
     const {page, query} = this.props.match.params;
 
     const data = JSON.parse(localStorage.getItem(`/search/${query}/${page}`));
+
     if (data) {
       this.setState({
         query: query,
@@ -34,44 +49,12 @@ class App extends Component {
     } else {
       const data = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=${page}&include_adult=false`)
           .then(res => res.json());
-
       this.setState({
         query: query,
         page: page,
         results: data,
       });
-
-      localStorage.setItem(`/search/${query}/${page}`,JSON.stringify(this.state.results));
-    }
-  };
-
-  componentDidUpdate = async (prevProps, prevState) => {
-    if (prevProps.match.params.page !== this.props.match.params.page) {
-      const {page, query} = this.props.match.params;
-      const data = JSON.parse(localStorage.getItem(`/search/${query}/${page}`));
-      if (data) {
-        this.setState({
-          query: query,
-          results: data,
-          page: page,
-        });
-      } else {
-        const data = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=${page}&include_adult=false`)
-            .then(res => res.json());
-
-        this.setState({
-          query: query,
-          page: page,
-          results: data,
-        });
-
-        localStorage.setItem(`/search/${query}/${page}`, JSON.stringify(this.state.results));
-      }
-      setTimeout(this.sortResults, 50); // to prevent bugs caused by asynchronous nature of setState
-    }
-
-    if(prevState.sorted !== this.state.sorted) {
-      this.sortResults();
+      localStorage.setItem(`/search/${query}/${page}`, JSON.stringify(this.state.results));
     }
   };
 
@@ -85,14 +68,14 @@ class App extends Component {
     const page = data.page;
 
     this.setState({
-      query: query,
+      query,
       page,
       results: data,
     });
 
     this.props.history.push(`/search/${query}/${page}`);
 
-    localStorage.setItem(`/search/${query}/${page}`,JSON.stringify(this.state.results));
+    localStorage.setItem(`/search/${query}/${page}`, JSON.stringify(this.state.results));
 
     setTimeout(this.sortResults, 50); // to prevent bugs caused by asynchronous nature of setState
   };
