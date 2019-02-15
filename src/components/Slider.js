@@ -1,5 +1,5 @@
 import React from 'react';
-import poster1 from '../img/poster1.png';
+import poster1 from '../img/poster1.jpg';
 import poster2 from '../img/poster2.jpg';
 import poster3 from '../img/poster3.jpg';
 
