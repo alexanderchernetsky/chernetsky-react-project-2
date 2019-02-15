@@ -4,7 +4,7 @@ import Form from './components/Form';
 import Movies from './components/Movies';
 import SortForm from './components/SortForm';
 import Pagination from './components/Pagination';
-import './style.css';
+import './style.sass';
 
 const api_key = 'eeb7c73b7cfc09ed59ca3805d5018bd0';
 
@@ -22,13 +22,9 @@ class App extends Component {
   };
 
   componentDidMount = async () => {
-    console.log('did mount works!');
     const {page, query} = this.props.match.params;
-    console.log(page);
-    console.log(query);
 
     const data = JSON.parse(localStorage.getItem(`/search/${query}/${page}`));
-    console.log(data);
     if (data) {
       this.setState({
         query: query,
@@ -38,8 +34,6 @@ class App extends Component {
     } else {
       const data = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=${page}&include_adult=false`)
           .then(res => res.json());
-
-      console.log(data);
 
       this.setState({
         query: query,
@@ -51,16 +45,10 @@ class App extends Component {
     }
   };
 
-  componentDidUpdate = async (prevProps, prevState, prevContext) => {
-    console.log('did update works!');
+  componentDidUpdate = async (prevProps, prevState) => {
     if (prevProps.match.params.page !== this.props.match.params.page) {
-      console.log('page changed!');
       const {page, query} = this.props.match.params;
-      console.log(page);
-      console.log(query);
-
       const data = JSON.parse(localStorage.getItem(`/search/${query}/${page}`));
-      console.log(data);
       if (data) {
         this.setState({
           query: query,
@@ -70,8 +58,6 @@ class App extends Component {
       } else {
         const data = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=${page}&include_adult=false`)
             .then(res => res.json());
-
-        console.log(data);
 
         this.setState({
           query: query,
@@ -95,8 +81,6 @@ class App extends Component {
     const query = searchFieldValue.replace(' ', '%20');
     const data = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=1&include_adult=false`)
         .then(res => res.json());
-
-    console.log(data);
 
     const page = data.page;
 
@@ -125,14 +109,11 @@ class App extends Component {
   };
 
   setSorting = (e) => {
-    console.log(e.currentTarget.value);
     this.setState({sorted: e.currentTarget.value});
   };
 
   sortResults = () => {
-    console.log('sorting works!');
     const data = {...this.state.results};
-    console.log(data);
     let sorted;
     if (this.state.sorted === 'vote_average') {
       sorted = data.results.sort((first, second) => {
@@ -152,17 +133,27 @@ class App extends Component {
       });
       data.results = sorted;
     }
-    console.log(sorted);
     this.setState({results: data});
   };
 
   render() {
-    const {results} = this.state.results;
+    const {results, total_results} = this.state.results;
     return (
         <div>
           <Form findMovies={this.findMovies}/>
-          <Pagination results={this.state.results} changePage={this.changePage}/>
-          <SortForm setSorting={this.setSorting}/>
+          <div className="container-fluid">
+            <div className="row bg-secondary">
+              <div className="col-12 col-md-3 col-xl-4">
+                {total_results&&<p className='pb-1 mb-0 text-center'>Results found: {total_results}</p>}
+              </div>
+              <div className="col-12 col-md-3 col-xl-4">
+                <Pagination results={this.state.results} changePage={this.changePage}/>
+              </div>
+              <div className="col-12 col-md-6 col-xl-4">
+                <SortForm setSorting={this.setSorting}/>
+              </div>
+            </div>
+          </div>
           {results&&<Movies movies={results}/>}
         </div>
     );

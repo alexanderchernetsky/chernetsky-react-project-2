@@ -1,8 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const api_key = 'eeb7c73b7cfc09ed59ca3805d5018bd0';
 
 class Movie extends React.Component{
+  static propTypes = {
+    match: PropTypes.object,
+    history: PropTypes.object,
+  };
+
   state = {
     movie: undefined,
   };
@@ -11,13 +17,8 @@ class Movie extends React.Component{
     const movieId = this.props.match.params.movieId;
     const data = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${api_key}&language=en-US`)
         .then(res => res.json());
-    console.log(data);
 
     this.setState({movie: data});
-  };
-
-  goBack = () => {
-
   };
 
   render() {
@@ -25,8 +26,8 @@ class Movie extends React.Component{
     return (
         <div className="container">
           {this.state.movie &&
-            <div className="jumbotron">
-              <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt="poster" className="rounded mx-auto d-block"/>
+            <div className="jumbotron pt-2">
+              <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt="poster" className="jumbotron__image rounded mx-auto d-block"/>
               <h1 className="display-4 text-center">{movie.title}</h1>
               <p className="lead text-center">{movie.tagline}</p>
               <p className="lead text-center">Duration:{movie.runtime} min. Release date: {movie.release_date}. Original language: {movie.original_language}</p>

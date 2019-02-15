@@ -4,9 +4,9 @@ import {Link} from 'react-router-dom';
 
 const Movies = (props) => {
   return (
-        <div className="card-deck">
+        <div className="card-deck mx-0 d-flex justify-content-around mt-2">
           {props.movies.map(movie => (
-          <div className="card movie__container" key={movie.id}>
+          <div className="card mb-2" key={movie.id}>
             <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt="poster" className="card-img-top movie-card"/>
               <div className="card-body">
                 <h5 className="card-title">{movie.original_title}</h5>
