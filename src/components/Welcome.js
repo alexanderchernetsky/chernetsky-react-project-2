@@ -1,8 +1,12 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Form from "./Form";
 import Slider from './Slider';
 
 class Welcome extends Component {
+  static propTypes = {
+    goToSearchPage: PropTypes.func,
+  };
 
   goToSearchPage = (e) => {
     e.preventDefault();

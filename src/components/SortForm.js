@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const SortForm = (props) => {
   return (
@@ -10,6 +11,10 @@ const SortForm = (props) => {
         <span>no</span><input type="radio" name="sort" value="no" defaultChecked onClick={props.setSorting}/>
       </form>
   )
+};
+
+SortForm.propTypes = {
+  setSorting: PropTypes.func,
 };
 
 export default SortForm;

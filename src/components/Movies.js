@@ -1,5 +1,6 @@
 import React from 'react';
-import {Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom';
 
 const Movies = (props) => {
   return (
@@ -25,6 +26,10 @@ const Movies = (props) => {
           ))}
         </div>
   )
+};
+
+Movies.propTypes = {
+  movies: PropTypes.array,
 };
 
 export default Movies;

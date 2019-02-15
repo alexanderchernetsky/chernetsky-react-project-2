@@ -1,12 +1,19 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Form from './components/Form';
 import Movies from './components/Movies';
 import SortForm from './components/SortForm';
+import Pagination from './components/Pagination';
 import './style.css';
 
 const api_key = 'eeb7c73b7cfc09ed59ca3805d5018bd0';
 
 class App extends Component {
+  static propTypes = {
+    match: PropTypes.object,
+    history: PropTypes.object,
+  };
+
   state = {
     query: undefined,
     page: undefined,
@@ -74,13 +81,12 @@ class App extends Component {
 
         localStorage.setItem(`/search/${query}/${page}`, JSON.stringify(this.state.results));
       }
-      setTimeout(this.sortResults, 100); // to prevent bugs caused by asynchronous nature of setState
+      setTimeout(this.sortResults, 50); // to prevent bugs caused by asynchronous nature of setState
     }
 
     if(prevState.sorted !== this.state.sorted) {
       this.sortResults();
     }
-
   };
 
   findMovies = async (e) => {
@@ -103,6 +109,8 @@ class App extends Component {
     this.props.history.push(`/search/${query}/${page}`);
 
     localStorage.setItem(`/search/${query}/${page}`,JSON.stringify(this.state.results));
+
+    setTimeout(this.sortResults, 50); // to prevent bugs caused by asynchronous nature of setState
   };
 
   changePage = async (direction) => {
@@ -149,17 +157,11 @@ class App extends Component {
   };
 
   render() {
-    const {total_pages, total_results, results, page} = this.state.results;
+    const {results} = this.state.results;
     return (
         <div>
           <Form findMovies={this.findMovies}/>
-          {total_results&&<p>Results found: {total_results}</p>}
-          {page&&
-          <p>
-            {total_pages&&page !==1&&<span onClick={() => this.changePage(-1)} className="badge badge-secondary">previous</span>}
-            Page: {page} from {total_pages}
-            {total_pages&&total_pages !==1&&(page !== total_pages)&&<span onClick={() => this.changePage(1)} className="badge badge-secondary">next</span>}
-          </p>}
+          <Pagination results={this.state.results} changePage={this.changePage}/>
           <SortForm setSorting={this.setSorting}/>
           {results&&<Movies movies={results}/>}
         </div>
