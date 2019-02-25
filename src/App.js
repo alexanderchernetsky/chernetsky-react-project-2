@@ -27,8 +27,8 @@ class App extends Component {
 
   componentDidUpdate = async (prevProps, prevState) => {
     if (prevProps.match.params.page !== this.props.match.params.page) {
-      this.getResults();
-      setTimeout(this.sortResults, 50); // to prevent bugs caused by asynchronous nature of setState
+      await this.getResults(); // await is used to prevent bugs caused by asynchronous nature of setState
+      this.sortResults();
     }
     if(prevState.sorted !== this.state.sorted) {
       this.sortResults();
