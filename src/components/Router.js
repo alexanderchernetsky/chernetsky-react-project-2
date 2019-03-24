@@ -1,21 +1,23 @@
-import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import App from '../App';
-import Movie from './Movie';
-import NotFound from './NotFound';
-import Welcome from './Welcome';
+import React, { lazy, Suspense } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import App from "../App";
+const Movie = lazy(() => import ("./Movie"));
+const NotFound = lazy(() => import ("./NotFound"));
+const Welcome = lazy(() => import ("./Welcome"));
 
 const Router = () => {
   return (
-      <BrowserRouter>
+    <BrowserRouter>
+      <Suspense fallback={<div>loading...</div>}>
         <Switch>
-          <Route exact path='/' component={Welcome}/>
-          <Route path='/search/:query/:page' component={App}/>
-          <Route path='/movie/:movieId' component={Movie}/>
-          <Route component={NotFound}/>
+          <Route exact path="/" component={Welcome} />
+          <Route path="/search/:query/:page" component={App} />
+          <Route path="/movie/:movieId" component={Movie} />
+          <Route component={NotFound} />
         </Switch>
-      </BrowserRouter>
-  )
+      </Suspense>
+    </BrowserRouter>
+  );
 };
 
 export default Router;

@@ -2,10 +2,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Form from "./Form";
 import Slider from './Slider';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner, faSearch  } from '@fortawesome/free-solid-svg-icons';
 
 class Welcome extends Component {
   static propTypes = {
-    goToSearchPage: PropTypes.func,
+    history: PropTypes.object,
   };
 
   goToSearchPage = (e) => {
@@ -17,6 +19,7 @@ class Welcome extends Component {
   render() {
     return (
         <React.Fragment>
+          <FontAwesomeIcon icon={faSpinner} spin />
           <Form findMovies={this.goToSearchPage}/>
           <Slider/>
         </React.Fragment>
