@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Form from "./components/Form";
-import Movies from "./components/Movies";
-import SortForm from "./components/SortForm";
-import Pagination from "./components/Pagination";
-import "./style.sass";
+import Header from "./Header";
+import Movies from "./Movies";
+import SortForm from "./SortForm";
+import Pagination from "./Pagination";
+import "../style.sass";
 
 const api_key = "eeb7c73b7cfc09ed59ca3805d5018bd0";
 
-class App extends Component {
+class SearchPage extends Component {
   static propTypes = {
     match: PropTypes.object,
     history: PropTypes.object
@@ -18,33 +18,38 @@ class App extends Component {
     query: undefined,
     page: undefined,
     results: {},
-    sorted: "no"
+    sorted: "no",
+    loading: false
   };
 
   componentDidMount() {
-    this.getResults();
+    const { page, query } = this.props.match.params;
+    this.getResults(page, query);
   }
 
   componentDidUpdate = async (prevProps, prevState) => {
     if (prevProps.match.params.page !== this.props.match.params.page) {
-      await this.getResults(); // await is used to prevent bugs caused by asynchronous nature of setState
+      const { page, query } = this.props.match.params;
+      await this.getResults(page, query);
       this.sortResults();
+      console.log('page change');
     }
     if (prevState.sorted !== this.state.sorted) {
       this.sortResults();
     }
   };
 
-  getResults = async () => {
-    const { page, query } = this.props.match.params;
+
+  getResults = async (page, query) => {
+    this.setState({ loading: true });
 
     const data = JSON.parse(localStorage.getItem(`/search/${query}/${page}`));
 
     if (data) {
       this.setState({
         query: query,
+        page: page,
         results: data,
-        page: page
       });
     } else {
       const data = await fetch(
@@ -53,39 +58,21 @@ class App extends Component {
       this.setState({
         query: query,
         page: page,
-        results: data
+        results: data,
       });
-      localStorage.setItem(
-        `/search/${query}/${page}`,
-        JSON.stringify(this.state.results)
-      );
+      localStorage.setItem(`/search/${query}/${page}`, JSON.stringify(data));
     }
+    this.setState({ loading: false });
   };
 
-  findMovies = async e => {
-    e.preventDefault();
-    const searchFieldValue = e.target.filmName.value;
+  findMovies = async event => {
+    const { history } = this.props;
+    event.preventDefault();
+    const searchFieldValue = event.target.filmName.value;
     const query = searchFieldValue.replace(" ", "%20");
-    const data = await fetch(
-      `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=1&include_adult=false`
-    ).then(res => res.json());
-
-    const page = data.page;
-
-    this.setState({
-      query,
-      page,
-      results: data
-    });
-
-    this.props.history.push(`/search/${query}/${page}`);
-
-    localStorage.setItem(
-      `/search/${query}/${page}`,
-      JSON.stringify(this.state.results)
-    );
-
-    setTimeout(this.sortResults, 50); // to prevent bugs caused by asynchronous nature of setState
+    await this.getResults(1, query);
+    history.push(`/search/${query}/1`);
+    this.sortResults();
   };
 
   changePage = async direction => {
@@ -134,15 +121,15 @@ class App extends Component {
     const { results, total_results } = this.state.results;
     return (
       <div>
-        <Form findMovies={this.findMovies} />
+        <Header findMovies={this.findMovies} loading={this.state.loading} />
         <div className="container-fluid">
           <div className="row bg-secondary">
             <div className="col-12 col-md-3 col-xl-4">
-              {total_results && (
+              {total_results ? (
                 <p className="pb-1 mb-0 text-center">
                   Results found: {total_results}
                 </p>
-              )}
+              ) : null}
             </div>
             <div className="col-12 col-md-3 col-xl-4">
               <Pagination
@@ -161,4 +148,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default SearchPage;

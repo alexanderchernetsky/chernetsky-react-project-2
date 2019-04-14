@@ -1,8 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import {faSpinner, faSearch} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
-const Form = props => {
+const Header = props => {
   return (
     <header className="app-header">
       <div className="app-header__name-wrapper">
@@ -16,14 +18,20 @@ const Form = props => {
       <form onSubmit={props.findMovies}>
         <label htmlFor="filmName">Type the name of the film: </label>
         <input type="text" name="filmName" />
-        <button type="submit">Search</button>
+        <button type="submit">
+          {props.loading ?
+              <FontAwesomeIcon icon={faSpinner} spin/> :
+              <FontAwesomeIcon icon={faSearch} />
+          }
+        </button>
       </form>
     </header>
   );
 };
 
-Form.propTypes = {
-  findMovies: PropTypes.func
+Header.propTypes = {
+  goToSearchPage: PropTypes.func,
+  loading: PropTypes.bool,
 };
 
-export default Form;
+export default Header;

@@ -1,19 +1,21 @@
 import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import App from "../App";
-const Movie = lazy(() => import ("./Movie"));
-const NotFound = lazy(() => import ("./NotFound"));
-const Welcome = lazy(() => import ("./Welcome"));
+import SearchPage from "./SearchPage";
+import Fallback from './Fallback';
+import NoResults from "./NoResults";
+const MoviePage = lazy(() => import ("./MoviePage"));
+const WelcomePage = lazy(() => import ("./WelcomePage"));
+
 
 const Router = () => {
   return (
     <BrowserRouter>
-      <Suspense fallback={<div>loading...</div>}>
+      <Suspense fallback={Fallback}>
         <Switch>
-          <Route exact path="/" component={Welcome} />
-          <Route path="/search/:query/:page" component={App} />
-          <Route path="/movie/:movieId" component={Movie} />
-          <Route component={NotFound} />
+          <Route exact path="/" component={WelcomePage} />
+          <Route path="/search/:query/:page" component={SearchPage} />
+          <Route path="/movie/:movieId" component={MoviePage} />
+          <Route render={() => <NoResults title='The page doesnt exist!' />} />
         </Switch>
       </Suspense>
     </BrowserRouter>

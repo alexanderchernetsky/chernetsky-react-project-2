@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 const api_key = "eeb7c73b7cfc09ed59ca3805d5018bd0";
 
-class Movie extends React.Component {
+class MoviePage extends React.Component {
   static propTypes = {
     match: PropTypes.object,
     history: PropTypes.object
@@ -71,4 +71,4 @@ class Movie extends React.Component {
   }
 }
 
-export default Movie;
+export default MoviePage;
