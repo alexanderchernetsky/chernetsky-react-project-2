@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
+import { MyContext } from "./SearchPage";
 
 function Pagination(props) {
-  const { total_pages, page } = props.results;
+  const context = useContext(MyContext);
+  const { total_pages, page } = context.state.results;
   return (
     <React.Fragment>
       {page && (

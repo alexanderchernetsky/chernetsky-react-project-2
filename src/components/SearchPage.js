@@ -1,14 +1,15 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import PropTypes from "prop-types";
 import Header from "./Header";
 import Movies from "./Movies";
-import SortForm from "./SortForm";
-import Pagination from "./Pagination";
+import PaginationAndSorting from "./PaginationAndSorting";
 import "../style.sass";
 
 const api_key = "eeb7c73b7cfc09ed59ca3805d5018bd0";
 
-class SearchPage extends Component {
+export const MyContext = React.createContext();
+
+export class SearchPage extends Component {
   static propTypes = {
     match: PropTypes.object,
     history: PropTypes.object
@@ -23,16 +24,15 @@ class SearchPage extends Component {
   };
 
   componentDidMount() {
-    const { page, query } = this.props.match.params;
+    const {page, query} = this.props.match.params;
     this.getResults(page, query);
   }
 
   componentDidUpdate = async (prevProps, prevState) => {
     if (prevProps.match.params.page !== this.props.match.params.page) {
-      const { page, query } = this.props.match.params;
+      const {page, query} = this.props.match.params;
       await this.getResults(page, query);
       this.sortResults();
-      console.log('page change');
     }
     if (prevState.sorted !== this.state.sorted) {
       this.sortResults();
@@ -41,7 +41,7 @@ class SearchPage extends Component {
 
 
   getResults = async (page, query) => {
-    this.setState({ loading: true });
+    this.setState({loading: true});
 
     const data = JSON.parse(localStorage.getItem(`/search/${query}/${page}`));
 
@@ -53,7 +53,7 @@ class SearchPage extends Component {
       });
     } else {
       const data = await fetch(
-        `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=${page}&include_adult=false`
+          `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=${page}&include_adult=false`
       ).then(res => res.json());
       this.setState({
         query: query,
@@ -62,11 +62,11 @@ class SearchPage extends Component {
       });
       localStorage.setItem(`/search/${query}/${page}`, JSON.stringify(data));
     }
-    this.setState({ loading: false });
+    this.setState({loading: false});
   };
 
   findMovies = async event => {
-    const { history } = this.props;
+    const {history} = this.props;
     event.preventDefault();
     const searchFieldValue = event.target.filmName.value;
     const query = searchFieldValue.replace(" ", "%20");
@@ -87,11 +87,11 @@ class SearchPage extends Component {
   };
 
   setSorting = e => {
-    this.setState({ sorted: e.currentTarget.value });
+    this.setState({sorted: e.currentTarget.value});
   };
 
   sortResults = () => {
-    const data = { ...this.state.results };
+    const data = {...this.state.results};
     let sorted;
     if (this.state.sorted === "vote_average") {
       sorted = data.results.sort((first, second) => {
@@ -108,44 +108,28 @@ class SearchPage extends Component {
     if (this.state.sorted === "date") {
       sorted = data.results.sort((first, second) => {
         return (
-          second.release_date.split("-").join("") -
-          first.release_date.split("-").join("")
+            second.release_date.split("-").join("") -
+            first.release_date.split("-").join("")
         );
       });
       data.results = sorted;
     }
-    this.setState({ results: data });
+    this.setState({results: data});
   };
 
   render() {
-    const { results, total_results } = this.state.results;
+    const {results, total_results} = this.state.results;
     return (
-      <div>
-        <Header findMovies={this.findMovies} loading={this.state.loading} />
-        <div className="container-fluid">
-          <div className="row bg-secondary">
-            <div className="col-12 col-md-3 col-xl-4">
-              {total_results ? (
-                <p className="pb-1 mb-0 text-center">
-                  Results found: {total_results}
-                </p>
-              ) : null}
-            </div>
-            <div className="col-12 col-md-3 col-xl-4">
-              <Pagination
-                results={this.state.results}
-                changePage={this.changePage}
-              />
-            </div>
-            <div className="col-12 col-md-6 col-xl-4">
-              <SortForm setSorting={this.setSorting} />
+        <MyContext.Provider value={{ state: this.state }}>
+          <Header findMovies={this.findMovies} loading={this.state.loading}/>
+          <div className="container-fluid">
+            <div className="row bg-secondary">
+              <PaginationAndSorting setSorting={this.setSorting} changePage={this.changePage}/>
             </div>
           </div>
-        </div>
-        {results && <Movies movies={results} />}
-      </div>
+          {results && <Movies movies={results}/>}
+        </MyContext.Provider>
     );
   }
 }
 
-export default SearchPage;

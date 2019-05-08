@@ -1,10 +1,10 @@
 import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import SearchPage from "./SearchPage";
+import { SearchPage } from "./SearchPage";
 import Fallback from './Fallback';
 import NoResults from "./NoResults";
 const MoviePage = lazy(() => import ("./MoviePage"));
-const WelcomePage = lazy(() => import ("./WelcomePage"));
+const WelcomePage = lazy(() => import ("./HomePage"));
 
 
 const Router = () => {

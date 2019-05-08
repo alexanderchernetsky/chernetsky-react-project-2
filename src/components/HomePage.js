@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Header from "./Header";
 import Slider from './Slider';
 
-class WelcomePage extends Component {
+class HomePage extends Component {
   static propTypes = {
     history: PropTypes.object,
   };
@@ -25,4 +25,4 @@ class WelcomePage extends Component {
   }
 }
 
-export default WelcomePage;
+export default HomePage;
