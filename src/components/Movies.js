@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {Link} from "react-router-dom";
 import NoResults from "./NoResults";
 
 const Movies = props => {
@@ -30,13 +29,8 @@ const Movies = props => {
                             ? movie.overview
                             : movie.overview.substr(0, 100) + "..."}
                       </p>
-                      <button className="btn btn-primary">
-                        <Link
-                            to={{pathname: `/movie/${movie.id}`}}
-                            className="movie__link"
-                        >
-                          More
-                        </Link>
+                      <button className="btn btn-primary" onClick={() => props.moreButtonHandler(movie.id)}>
+                        More
                       </button>
                     </div>
                   </div>

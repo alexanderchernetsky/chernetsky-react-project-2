@@ -3,8 +3,8 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { SearchPage } from "./SearchPage";
 import Fallback from './Fallback';
 import NoResults from "./NoResults";
-const MoviePage = lazy(() => import ("./MoviePage"));
-const WelcomePage = lazy(() => import ("./HomePage"));
+const MoviePageComponent = lazy(() => import ("./MoviePage"));
+const HomePage = lazy(() => import ("./HomePage"));
 
 
 const Router = () => {
@@ -12,9 +12,9 @@ const Router = () => {
     <BrowserRouter>
       <Suspense fallback={Fallback}>
         <Switch>
-          <Route exact path="/" component={WelcomePage} />
-          <Route path="/search/:query/:page" component={SearchPage} />
-          <Route path="/movie/:movieId" component={MoviePage} />
+          <Route exact path="/" component={HomePage} />
+          <Route path="/search" component={SearchPage} />
+          <Route path="/preview/:filmType/:filmId" component={MoviePageComponent} />
           <Route render={() => <NoResults title='The page doesnt exist!' />} />
         </Switch>
       </Suspense>

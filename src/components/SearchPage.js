@@ -18,21 +18,26 @@ export class SearchPage extends Component {
   state = {
     query: undefined,
     page: undefined,
+    type: undefined,
     results: {},
     sorted: "no",
     loading: false
   };
 
   componentDidMount() {
-    const {page, query} = this.props.match.params;
-    this.getResults(page, query);
+    const paramsString = this.props.location.search;
+    const searchParams = new URLSearchParams(paramsString);
+    const type = searchParams.get("type");
+    const query = searchParams.get("query");
+    const page = searchParams.get("page");
+    this.getResults(type, query, page);
   }
 
   componentDidUpdate = async (prevProps, prevState) => {
-    if (prevProps.match.params.page !== this.props.match.params.page) {
-      const {page, query} = this.props.match.params;
-      await this.getResults(page, query);
-      this.sortResults();
+    console.log('componentDidUpdate');
+    if (prevProps.location.search !== this.props.location.search) {
+      await this.getResults();
+      /*this.sortResults();*/
     }
     if (prevState.sorted !== this.state.sorted) {
       this.sortResults();
@@ -40,39 +45,24 @@ export class SearchPage extends Component {
   };
 
 
-  getResults = async (page, query) => {
+  getResults = async () => {
+    const paramsString = this.props.location.search;
+    const searchParams = new URLSearchParams(paramsString);
+    const type = searchParams.get("type");
+    const query = searchParams.get("query");
+    const page = searchParams.get("page");
     this.setState({loading: true});
 
-    const data = JSON.parse(localStorage.getItem(`/search/${query}/${page}`));
-
-    if (data) {
-      this.setState({
-        query: query,
-        page: page,
-        results: data,
-      });
-    } else {
       const data = await fetch(
-          `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&language=en-US&query=${query}&page=${page}&include_adult=false`
+          `https://api.themoviedb.org/3/search/${type}?api_key=${api_key}&language=en-US&query=${query}&page=${page}&include_adult=false`
       ).then(res => res.json());
       this.setState({
+        type: type,
         query: query,
         page: page,
         results: data,
       });
-      localStorage.setItem(`/search/${query}/${page}`, JSON.stringify(data));
-    }
     this.setState({loading: false});
-  };
-
-  findMovies = async event => {
-    const {history} = this.props;
-    event.preventDefault();
-    const searchFieldValue = event.target.filmName.value;
-    const query = searchFieldValue.replace(" ", "%20");
-    await this.getResults(1, query);
-    history.push(`/search/${query}/1`);
-    this.sortResults();
   };
 
   changePage = async direction => {
@@ -117,17 +107,21 @@ export class SearchPage extends Component {
     this.setState({results: data});
   };
 
+  moreButtonHandler = id => {
+    this.props.history.push(`/preview/${this.state.type}/${id}`);
+  };
+
   render() {
     const {results, total_results} = this.state.results;
     return (
         <MyContext.Provider value={{ state: this.state }}>
-          <Header findMovies={this.findMovies} loading={this.state.loading}/>
+          <Header loading={this.state.loading}/>
           <div className="container-fluid">
             <div className="row bg-secondary">
               <PaginationAndSorting setSorting={this.setSorting} changePage={this.changePage}/>
             </div>
           </div>
-          {results && <Movies movies={results}/>}
+          {results && <Movies movies={results} moreButtonHandler={this.moreButtonHandler}/>}
         </MyContext.Provider>
     );
   }
