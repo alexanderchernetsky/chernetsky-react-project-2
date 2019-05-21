@@ -14,7 +14,6 @@ function HomePage(props) {
     const fetchTrendingMovies = async () => {
       let response = await fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${api_key}`);
       response = await response.json();
-
       setMovies(response.results.slice(0, 10));
     };
 
@@ -25,23 +24,18 @@ function HomePage(props) {
     const fetchPopularPeople = async () => {
       let response = await fetch(`https://api.themoviedb.org/3/person/popular?api_key=${api_key}&language=en-US&page=1`);
       response = await response.json();
-
       setPeople(response.results.slice(0, 10));
     };
 
     fetchPopularPeople();
   }, []);
 
-  useEffect(() => {
-    console.log(people);
-  }, [people]);
-
   return (
     <div className="container-fluid px-0">
       <div className="row w-100 mx-0">
         <Header/>
       </div>
-      <div className="row w-100 mx-0">
+      <div className="row w-100 mx-auto home-page-container">
         <div className="col-3">
           <h5 className="font-weight-bold">Popular people</h5>
           <div className="row flex-wrap d-flex">

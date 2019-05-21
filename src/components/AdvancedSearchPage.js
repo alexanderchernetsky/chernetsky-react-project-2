@@ -1,7 +1,35 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Header from './Header';
+import createSearchString from '../helpers/createSearchString';
+import getFilledParams from '../helpers/getFilledParams';
+
+
+const api_key = "eeb7c73b7cfc09ed59ca3805d5018bd0";
 
 function AdvancedSearchPage(props) {
+
+  useEffect(() => {
+    fetch(`http://files.tmdb.org/p/exports/movie_ids_05_20_2019.json.gz`)
+      .then(res => console.log(res));
+  }, []);
+
+  const findFilm = event => {
+    event.preventDefault();
+    const {genre, sorting, filmName, release_date, TVserial} = event.target;
+    const params = {
+      with_genres: genre.value,
+      sort_by: sorting.value,
+      with_keywords: filmName.value,
+      primary_release_year: release_date.value,
+    };
+
+
+
+    let type;
+    TVserial.checked ? type = "tv" : type = "movie";
+    props.history.push(`search/${type}${createSearchString(getFilledParams(params))}`);
+  };
+
   return (
     <>
       <Header/>
@@ -15,25 +43,25 @@ function AdvancedSearchPage(props) {
           <div className="form-row">
             <div className="col-4">
               <label htmlFor="sorting">Sort by:</label>
-              <select className="form-control">
-                <option disabled selected value> -- select an option -- </option>
-                <option value="popularity">most popular</option>
-                <option value="date">newest</option>
-                <option value="revenue">the most profitable</option>
+              <select className="form-control" name="sorting">
+                <option label=" "></option>
+                <option value="popularity.desc">most popular</option>
+                <option value="release_date.desc">newest</option>
+                <option value="revenue.desc">most profitable</option>
               </select>
             </div>
             <div className="col-4">
               <label htmlFor="genre">Genre:</label>
-              <select className="form-control">
-                <option disabled selected value> -- select an option -- </option>
-                <option value="drama">drama</option>
-                <option value="comedy">comedy</option>
-                <option value="thriller">thriller</option>
+              <select className="form-control" name="genre" defaultValue="select an option">
+                <option label=" "></option>
+                <option value="18">drama</option>
+                <option value="35">comedy</option>
+                <option value="878">science fiction</option>
               </select>
             </div>
             <div className="col-4">
-              <label htmlFor="release-year">Release date:</label>
-              <input type="text" className="form-control" name="release-year"/>
+              <label htmlFor="release_date">Release date:</label>
+              <input type="text" className="form-control" name="release_date"/>
             </div>
           </div>
           <br/>
@@ -47,11 +75,6 @@ function AdvancedSearchPage(props) {
       </div>
     </>
   )
-}
-
-function findFilm(event) {
-  event.preventDefault();
-  console.log(event);
 }
 
 export default AdvancedSearchPage;

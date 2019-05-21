@@ -16,56 +16,48 @@ export class SearchPage extends Component {
   };
 
   state = {
-    query: undefined,
     page: undefined,
-    type: undefined,
-    results: {},
+    results: [],
     sorted: "no",
     loading: false
   };
 
   componentDidMount() {
-    const paramsString = this.props.location.search;
-    const searchParams = new URLSearchParams(paramsString);
-    const type = searchParams.get("type");
-    const query = searchParams.get("query");
-    const page = searchParams.get("page");
-    this.getResults(type, query, page);
+    this.getResults();
   }
 
-  componentDidUpdate = async (prevProps, prevState) => {
+  /*componentDidUpdate = async (prevProps, prevState) => {
     console.log('componentDidUpdate');
     if (prevProps.location.search !== this.props.location.search) {
       await this.getResults();
-      /*this.sortResults();*/
+      /!*this.sortResults();*!/
     }
     if (prevState.sorted !== this.state.sorted) {
       this.sortResults();
     }
-  };
+  };*/
 
 
   getResults = async () => {
+    const {params} = this.props.match;
     const paramsString = this.props.location.search;
-    const searchParams = new URLSearchParams(paramsString);
-    const type = searchParams.get("type");
-    const query = searchParams.get("query");
-    const page = searchParams.get("page");
+    const type = params.type;
+
     this.setState({loading: true});
 
-      const data = await fetch(
-          `https://api.themoviedb.org/3/search/${type}?api_key=${api_key}&language=en-US&query=${query}&page=${page}&include_adult=false`
-      ).then(res => res.json());
-      this.setState({
-        type: type,
-        query: query,
-        page: page,
-        results: data,
-      });
+    let data = await fetch(
+      `https://api.themoviedb.org/3/discover/${type}${paramsString}&api_key=${api_key}&page=1`
+    );
+    data = await data.json();
+    console.log(data.results);
+    this.setState({
+      results: data.results,
+    });
+
     this.setState({loading: false});
   };
 
-  changePage = async direction => {
+  /*changePage = async direction => {
     const page = this.state.results.page + direction;
     const query = this.state.query;
 
@@ -98,31 +90,32 @@ export class SearchPage extends Component {
     if (this.state.sorted === "date") {
       sorted = data.results.sort((first, second) => {
         return (
-            second.release_date.split("-").join("") -
-            first.release_date.split("-").join("")
+          second.release_date.split("-").join("") -
+          first.release_date.split("-").join("")
         );
       });
       data.results = sorted;
     }
     this.setState({results: data});
-  };
+  };*/
 
   moreButtonHandler = id => {
     this.props.history.push(`/preview/${this.state.type}/${id}`);
   };
 
   render() {
-    const {results, total_results} = this.state.results;
+    const {results} = this.state;
+    console.log(results);
     return (
-        <MyContext.Provider value={{ state: this.state }}>
-          <Header loading={this.state.loading}/>
-          <div className="container-fluid">
-            <div className="row bg-secondary">
-              <PaginationAndSorting setSorting={this.setSorting} changePage={this.changePage}/>
-            </div>
+      <MyContext.Provider value={{state: this.state}}>
+        <Header loading={this.state.loading}/>
+        <div className="container-fluid">
+          <div className="row bg-secondary">
+            <PaginationAndSorting setSorting={this.setSorting} changePage={this.changePage}/>
           </div>
-          {results && <Movies movies={results} moreButtonHandler={this.moreButtonHandler}/>}
-        </MyContext.Provider>
+        </div>
+        {results && <Movies movies={results} moreButtonHandler={this.moreButtonHandler}/>}
+      </MyContext.Provider>
     );
   }
 }

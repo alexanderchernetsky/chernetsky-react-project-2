@@ -14,7 +14,7 @@ const Router = () => {
       <Suspense fallback={Fallback}>
         <Switch>
           <Route exact path="/" component={HomePage} />
-          <Route path="/search" component={SearchPage} />
+          <Route path="/search/:type" component={SearchPage} />
           <Route path="/s" component={AdvancedSearchPage} />
           <Route path="/preview/:filmType/:filmId" component={MoviePageComponent} />
           <Route render={() => <NoResults title='The page doesnt exist!' />} />
