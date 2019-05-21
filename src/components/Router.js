@@ -5,6 +5,7 @@ import Fallback from './Fallback';
 import NoResults from "./NoResults";
 const MoviePageComponent = lazy(() => import ("./MoviePage"));
 const HomePage = lazy(() => import ("./HomePage"));
+const AdvancedSearchPage = lazy(() => import ("./AdvancedSearchPage"));
 
 
 const Router = () => {
@@ -14,6 +15,7 @@ const Router = () => {
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/search" component={SearchPage} />
+          <Route path="/s" component={AdvancedSearchPage} />
           <Route path="/preview/:filmType/:filmId" component={MoviePageComponent} />
           <Route render={() => <NoResults title='The page doesnt exist!' />} />
         </Switch>
