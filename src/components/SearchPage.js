@@ -16,6 +16,7 @@ export class SearchPage extends Component {
   };
 
   state = {
+    query: '',
     page: undefined,
     results: [],
     sorted: "no",
@@ -39,21 +40,25 @@ export class SearchPage extends Component {
 
 
   getResults = async () => {
-    const {params} = this.props.match;
     const paramsString = this.props.location.search;
-    const type = params.type;
-
+    const type = this.props.match.params.type;
+    const params = new URLSearchParams(paramsString);
     this.setState({loading: true});
+    let data;
+    if (params.has('title')) {
+      const title = params.get('title');
+      data = await fetch(`https://api.themoviedb.org/3/search/${type}?api_key=${api_key}&language=en-US&query=${title}&page=1`)
+    } else {
+      data = await fetch(
+        `https://api.themoviedb.org/3/discover/${type}${paramsString}&api_key=${api_key}&page=1`
+      );
+    }
 
-    let data = await fetch(
-      `https://api.themoviedb.org/3/discover/${type}${paramsString}&api_key=${api_key}&page=1`
-    );
     data = await data.json();
-    console.log(data.results);
     this.setState({
+      query: paramsString,
       results: data.results,
     });
-
     this.setState({loading: false});
   };
 

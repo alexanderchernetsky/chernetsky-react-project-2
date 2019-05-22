@@ -6,15 +6,10 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 function Header(props) {
   const findFilm = event => {
-    const {history} = props;
     event.preventDefault();
-    const isItTVSerial = event.target.TVserial.checked;
+    const {history} = props;
     const searchFieldValue = event.target.filmName.value;
-    if (isItTVSerial) {
-      history.push(`/search?type=tv&query=${searchFieldValue}&page=1`);
-    } else {
-      history.push(`/search?type=movie&query=${searchFieldValue}&page=1`);
-    }
+    history.push(`/search/movie?title=${searchFieldValue}`);
   };
 
   const openAdvancedSearchPage = () => {
@@ -32,7 +27,7 @@ function Header(props) {
         </Link>
       </div>
       <form onSubmit={findFilm}>
-        <label htmlFor="filmName">Type the name of the film: </label>
+        <label htmlFor="filmName">Type the name of the movie: </label>
         <input type="text" name="filmName"/>
         <button type="button" onClick={openAdvancedSearchPage}>
           <FontAwesomeIcon icon={faSlidersH}/>
