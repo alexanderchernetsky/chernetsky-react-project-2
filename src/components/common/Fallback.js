@@ -1,6 +1,6 @@
 import React from 'react';
-import {faSpinner} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSpinner} from "@fortawesome/free-solid-svg-icons/index";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome/index";
 
 const Fallback =  (
     <div className="mt-5 text-center">

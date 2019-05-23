@@ -1,7 +1,7 @@
 import React from "react";
-import poster1 from "../img/poster1.jpg";
+import poster1 from "../../img/poster1.jpg";
 
-import poster3 from "../img/poster3.jpg";
+import poster3 from "../../img/poster3.jpg";
 
 const Slider = () => {
   return (

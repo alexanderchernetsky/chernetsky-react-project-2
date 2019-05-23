@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import NoResults from "./NoResults";
+import NoResults from "../../../common/NoResults";
+import './style.sass';
 
 const Movies = props => {
   return (

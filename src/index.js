@@ -5,6 +5,7 @@ import "popper.js";
 import "bootstrap";
 import Router from "./components/Router";
 import * as serviceWorker from "./serviceWorker";
+import "./style.sass";
 
 ReactDOM.render(<Router />, document.getElementById("root"));
 

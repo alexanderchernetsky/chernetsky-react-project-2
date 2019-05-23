@@ -1,5 +1,5 @@
 import React from 'react';
-import empty from '../img/empty.png';
+import empty from '../../img/empty.png';
 import PropTypes from 'prop-types';
 
 const NoResults = ({title, description}) => (

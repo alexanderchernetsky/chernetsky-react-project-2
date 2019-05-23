@@ -1,21 +1,21 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
-import Header from "./Header";
-import Movies from "./Movies";
-import PaginationAndSorting from "./PaginationAndSorting";
-import "../style.sass";
+import Header from "../../common/Header/Header";
+import Movies from "./components/Movies";
+
 
 const api_key = "eeb7c73b7cfc09ed59ca3805d5018bd0";
 
-export const MyContext = React.createContext();
+const MyContext = React.createContext();
 
-export class SearchPage extends Component {
+class SearchPage extends Component {
   static propTypes = {
     match: PropTypes.object,
     history: PropTypes.object
   };
 
   state = {
+    type: undefined,
     query: '',
     page: undefined,
     results: [],
@@ -56,6 +56,7 @@ export class SearchPage extends Component {
 
     data = await data.json();
     this.setState({
+      type: type,
       query: paramsString,
       results: data.results,
     });
@@ -116,7 +117,7 @@ export class SearchPage extends Component {
         <Header loading={this.state.loading}/>
         <div className="container-fluid">
           <div className="row bg-secondary">
-            <PaginationAndSorting setSorting={this.setSorting} changePage={this.changePage}/>
+            pagination
           </div>
         </div>
         {results && <Movies movies={results} moreButtonHandler={this.moreButtonHandler}/>}
@@ -125,3 +126,4 @@ export class SearchPage extends Component {
   }
 }
 
+export default SearchPage;

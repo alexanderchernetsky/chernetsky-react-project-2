@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import SerialUI from "./SerialUI";
-import MovieUI from "./MovieUI";
+import SerialUI from "./components/SerialUI";
+import MovieUI from "./components/MovieUI";
 
 const api_key = "eeb7c73b7cfc09ed59ca3805d5018bd0";
 

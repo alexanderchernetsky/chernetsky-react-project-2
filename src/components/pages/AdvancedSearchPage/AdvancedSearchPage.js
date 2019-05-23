@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
-import Header from './Header';
-import createSearchString from '../helpers/createSearchString';
-import getFilledParams from '../helpers/getFilledParams';
+import Header from '../../common/Header/Header';
+import createSearchString from '../../../helpers/createSearchString';
+import getFilledParams from '../../../helpers/getFilledParams';
 
 
 const api_key = "eeb7c73b7cfc09ed59ca3805d5018bd0";
@@ -49,7 +49,7 @@ function AdvancedSearchPage(props) {
     <>
       <Header/>
 
-      <div className="container-fluid col-9 bg-secondary mt-4">
+      <div className="container-fluid col-9 bg-secondary mt-4 pb-3">
         <div className="mx-auto col-3 text-center font-weight-bold mt-4">Advanced Search</div>
 
         <form onSubmit={findFilmByName} className="bg-light p-3">

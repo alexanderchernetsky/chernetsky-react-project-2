@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import {Link, withRouter} from "react-router-dom";
-import {faSpinner, faSearch, faSlidersH} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSpinner, faSearch, faSlidersH} from '@fortawesome/free-solid-svg-icons/index';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome/index";
+import './style.sass';
 
 function Header(props) {
   const findFilm = event => {
@@ -13,7 +14,7 @@ function Header(props) {
   };
 
   const openAdvancedSearchPage = () => {
-    props.history.push('/s');
+    props.history.push('/advanced');
   };
 
   return (
@@ -29,10 +30,10 @@ function Header(props) {
       <form onSubmit={findFilm}>
         <label htmlFor="filmName">Type the name of the movie: </label>
         <input type="text" name="filmName"/>
-        <button type="button" onClick={openAdvancedSearchPage}>
+        <button className="app-header__button" type="button" onClick={openAdvancedSearchPage}>
           <FontAwesomeIcon icon={faSlidersH}/>
         </button>
-        <button type="submit">
+        <button type="submit" className="app-header__button">
           {props.loading ?
             <FontAwesomeIcon icon={faSpinner} spin/> :
             <FontAwesomeIcon icon={faSearch}/>
