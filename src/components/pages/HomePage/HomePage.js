@@ -108,7 +108,7 @@ function HomePage(props) {
               <hr className="my-4"/>
               <p>{personInfo.biography}</p>
               <p className="lead">
-                <button className="btn btn-primary btn-lg" onClick={hideModal} role="button">Close</button>
+                <button className="btn btn-primary btn-lg" onClick={hideModal}>Close</button>
               </p>
             </div>
           </>

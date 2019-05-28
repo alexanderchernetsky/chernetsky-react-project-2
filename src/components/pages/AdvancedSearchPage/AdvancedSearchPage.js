@@ -19,7 +19,7 @@ function AdvancedSearchPage(props) {
       primary_release_year: release_date.value,
     };
 
-    if (keyword) {
+    if (keyword.value) {
       let keywordsArray;
       let keywordsIdArray = [];
       await fetch(`https://api.themoviedb.org/3/search/keyword?api_key=${api_key}&query=${keyword.value}&page=1`)
